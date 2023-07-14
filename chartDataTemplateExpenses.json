@@ -1,0 +1,18 @@
+{
+  "type": "doughnut",
+  "data": {
+    "datasets": [
+      {
+        "data": []
+      }
+    ],
+    "labels": []
+  },
+  "options": {
+    "plugins": {
+      "legend": {
+        "position": "left"
+      }
+    }
+  }
+}

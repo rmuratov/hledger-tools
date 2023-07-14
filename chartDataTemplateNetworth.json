@@ -1,0 +1,21 @@
+{
+  "type": "bar",
+  "data": {
+    "labels": [],
+    "datasets": [
+      {
+        "label": "Net worth",
+        "data": [],
+        "borderWidth": 1
+      }
+    ]
+  },
+  "options": {
+    "grouped": true,
+    "scales": {
+      "y": {
+        "beginAtZero": true
+      }
+    }
+  }
+}

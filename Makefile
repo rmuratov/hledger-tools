@@ -1,0 +1,2 @@
+make:
+	bun index.ts
