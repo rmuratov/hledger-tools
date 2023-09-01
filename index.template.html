@@ -7,18 +7,27 @@
     <title>Document</title>
 
     <style>
+      body {
+        font-family: sans-serif;
+      }
+
       .container {
-        display: flex;
+        max-width: 768px;
+        margin: auto;
       }
 
       .chart-container {
-        width: 50%;
+      }
+
+      .total {
+        font-size: 2rem;
+        text-align: center;
       }
     </style>
   </head>
   <body>
-    <div>Total: ${{TOTAL}}</div>
     <div class="container">
+      <div class="total"><strong>Total: ${{TOTAL}}</strong></div>
       <div class="chart-container">
         <canvas id="expenses" width="300" height="150"></canvas>
       </div>

@@ -7,6 +7,8 @@ const BEGIN_DATE = "2023-05-11";
 
 /** NETWORTH */
 async function networth() {
+  console.log("Calculating net worth...");
+
   let beginDate = dayjs(BEGIN_DATE);
   const endDate = dayjs();
 
@@ -57,6 +59,8 @@ let totalExpenses = 0;
 
 /** EXPENSES */
 async function expenses() {
+  console.log("Calculating expenses...");
+
   const command = "hledger -p lastmonth --depth 2 bal -X USD Expenses -O csv";
   const expesnses = Bun.spawn(command.split(" "));
 
