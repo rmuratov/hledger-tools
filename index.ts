@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import networthTemplate from "./chartDataTemplateNetworth.json";
 import expensesTemplate from "./chartDataTemplateExpenses.json";
+import { log } from "console";
 
 const BEGIN_DATE = "2023-05-11";
 
@@ -41,6 +42,19 @@ async function networth() {
   return JSON.stringify(networthTemplate, null, "  ");
 }
 
+function parseRow(row?: string) {
+  if (!row) return { label: "", amount: 0 };
+
+  const [labelString, amountString] = row.split('","');
+
+  const label = labelString.split(":")[1];
+  const amount = parseFloat(amountString.split(" ")[0]);
+
+  return { label, amount };
+}
+
+let totalExpenses = 0;
+
 /** EXPENSES */
 async function expenses() {
   const command = "hledger -p lastmonth --depth 2 bal -X USD Expenses -O csv";
@@ -51,17 +65,11 @@ async function expenses() {
   const data = text.split("\n").filter(Boolean);
 
   data.shift(); // remove csv header
-  data.pop(); // remove "total"
+  const total = data.pop(); // remove "total"
 
-  let all: { label: string; amount: number }[] = [];
+  totalExpenses = parseRow(total).amount;
 
-  data.forEach((elem) => {
-    const [label, amountString] = elem.split('","');
-
-    const amount = parseFloat(amountString.split(" ")[0]);
-
-    all.push({ label: label.split(":")[1], amount });
-  });
+  let all: { label: string; amount: number }[] = data.map(parseRow);
 
   all = all.sort((a, b) => b.amount - a.amount);
 
@@ -79,11 +87,22 @@ async function expenses() {
 const networthData = await networth();
 const expensesData = await expenses();
 
-console.log(networthData);
-
 let html = await Bun.file("index.template.html").text();
 
 html = html.replace(/{{NETWORTH}}/, networthData);
 html = html.replace(/{{EXPENSES}}/, expensesData);
+html = html.replace(/{{TOTAL}}/, totalExpenses.toString());
 
 Bun.write("./index.html", html);
+
+Bun.serve({
+  port: 3000,
+  hostname: "0.0.0.0",
+  fetch(req) {
+    const response = new Response(html);
+    response.headers.append("Content-Type", "text/html");
+    return response;
+  },
+});
+
+console.log("Server listening on http://localhost:3000");
