@@ -58,10 +58,10 @@ function parseRow(row?: string) {
 let totalExpenses = 0;
 
 /** EXPENSES */
-async function expenses() {
+async function expenses(period: 'lastmonth' | 'thismonth' = 'lastmonth') {
   console.log("Calculating expenses...");
 
-  const command = "hledger -p lastmonth --depth 2 bal -X USD Expenses -O csv";
+  const command = `hledger -p ${period} --depth 2 bal -X USD Expenses -O csv`;
   const expesnses = Bun.spawn(command.split(" "));
 
   const text = await new Response(expesnses.stdout).text();
