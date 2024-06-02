@@ -1,9 +1,8 @@
 import dayjs from "dayjs";
 import networthTemplate from "./chartDataTemplateNetworth.json";
 import expensesTemplate from "./chartDataTemplateExpenses.json";
-import { log } from "console";
 
-const BEGIN_DATE = "2023-05-11";
+const BEGIN_DATE = "2023-05-31";
 
 /** NETWORTH */
 async function networth() {
@@ -33,7 +32,7 @@ async function networth() {
 
     amounts.push(amount);
 
-    beginDate = beginDate.add(1, "day");
+    beginDate = beginDate.add(1, "month").endOf("month");
   } while (beginDate.isBefore(endDate));
 
   // @ts-ignore
@@ -58,7 +57,7 @@ function parseRow(row?: string) {
 let totalExpenses = 0;
 
 /** EXPENSES */
-async function expenses(period: 'lastmonth' | 'thismonth' = 'lastmonth') {
+async function expenses(period: "lastmonth" | "thismonth" = "lastmonth") {
   console.log("Calculating expenses...");
 
   const command = `hledger -p ${period} --depth 2 bal -X USD Expenses -O csv`;
@@ -100,7 +99,7 @@ html = html.replace(/{{TOTAL}}/, totalExpenses.toString());
 Bun.write("./index.html", html);
 
 Bun.serve({
-  port: 3000,
+  port: 3001,
   hostname: "0.0.0.0",
   fetch(req) {
     const response = new Response(html);
@@ -109,4 +108,4 @@ Bun.serve({
   },
 });
 
-console.log("Server listening on http://localhost:3000");
+console.log("Server listening on http://localhost:3001");
